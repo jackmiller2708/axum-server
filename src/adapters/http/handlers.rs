@@ -43,3 +43,17 @@ pub async fn get_users(
             .collect(),
     ))
 }
+
+pub async fn get_user_by_id(
+    State(state): State<AppState>,
+    params: axum::extract::Path<u64>,
+) -> Result<Json<UserResponse>, (axum::http::StatusCode, String)> {
+    let user = user_logic::get_user_by_id(&*state.user_repo, params.0)
+        .await
+        .map_err(|e| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    Ok(Json(UserResponse {
+        id: user.id,
+        email: user.email.0,
+    }))
+}

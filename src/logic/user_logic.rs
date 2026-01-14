@@ -16,3 +16,8 @@ pub async fn get_users<R: UserRepo + ?Sized>(repo: &R) -> anyhow::Result<Vec<Use
     let users = repo.get_all().await?;
     Ok(users)
 }
+
+pub async fn get_user_by_id<R: UserRepo + ?Sized>(repo: &R, id: u64) -> anyhow::Result<User> {
+    let user = repo.get_by_id(id).await?;
+    Ok(user)
+}

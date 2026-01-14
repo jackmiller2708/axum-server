@@ -18,4 +18,10 @@ impl UserRepo for MemoryUserRepo {
         let users = self.users.lock().unwrap().clone();
         Ok(users)
     }
+
+    async fn get_by_id(&self, id: u64) -> anyhow::Result<User> {
+        let users = self.users.lock().unwrap().clone();
+        let user = users.into_iter().find(|user| user.id == id);
+        Ok(user.unwrap())
+    }
 }
