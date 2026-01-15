@@ -1,5 +1,6 @@
 use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;
+use tracing_subscriber::EnvFilter;
 
 use crate::{
     adapters::{db::postgres::PostgresUserRepo, http::router::http_router},
@@ -7,14 +8,13 @@ use crate::{
 };
 
 pub async fn run() -> anyhow::Result<()> {
-    dotenvy::dotenv().ok();
-
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::DEBUG)
+        .with_env_filter(EnvFilter::new("debug").add_directive("sqlx::query=info".parse().unwrap()))
         .with_target(false)
         .with_thread_ids(false)
-        .with_file(true)
-        .with_line_number(true)
+        .with_file(false)
+        .with_line_number(false)
+        .compact()
         .init();
 
     let config = Config::from_env()?;

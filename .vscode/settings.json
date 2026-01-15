@@ -1,7 +1,11 @@
 {
   "cSpell.words": [
+    "chrono",
+    "dotenv",
     "dotenvy",
     "flashdeal",
+    "initdb",
+    "ossp",
     "serde",
     "sqlx"
   ]
