@@ -1,11 +1,22 @@
-use crate::{app::state::AppState, logic::user_logic};
+use crate::{app::state::AppState, domain::user::User, logic::user_logic};
 use anyhow::Context;
 use axum::{Json, extract::State};
+use sqlx::types::chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 #[derive(serde::Serialize)]
 pub struct UserResponse {
-    pub id: String,
+    pub id: Uuid,
+    pub created_at: DateTime<Utc>,
+}
+
+impl From<User> for UserResponse {
+    fn from(user: User) -> Self {
+        Self {
+            id: user.id,
+            created_at: user.created_at,
+        }
+    }
 }
 
 pub async fn create_user(
@@ -15,9 +26,7 @@ pub async fn create_user(
         .await
         .map_err(|e| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
-    Ok(Json(UserResponse {
-        id: user.id.to_string(),
-    }))
+    Ok(Json(user.into()))
 }
 
 pub async fn get_users(
@@ -27,14 +36,7 @@ pub async fn get_users(
         .await
         .map_err(|e| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
-    Ok(Json(
-        users
-            .into_iter()
-            .map(|user| UserResponse {
-                id: user.id.to_string(),
-            })
-            .collect(),
-    ))
+    Ok(Json(users.into_iter().map(|user| user.into()).collect()))
 }
 
 pub async fn get_user_by_id(
@@ -46,7 +48,5 @@ pub async fn get_user_by_id(
         .await
         .map_err(|e| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
-    Ok(Json(UserResponse {
-        id: user.id.to_string(),
-    }))
+    Ok(Json(user.into()))
 }

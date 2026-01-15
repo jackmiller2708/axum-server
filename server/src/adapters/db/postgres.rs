@@ -16,6 +16,25 @@ impl PostgresUserRepo {
 
 #[async_trait]
 impl UserRepo for PostgresUserRepo {
+    async fn create(&self) -> anyhow::Result<User> {
+        let rows = sqlx::query!(
+            r#"
+            INSERT INTO users DEFAULT VALUES
+            RETURNING *
+            "#,
+        )
+        .fetch_all(&self.pool)
+        .await?;
+
+        match rows.first() {
+            Some(r) => Ok(User {
+                id: r.id,
+                created_at: r.created_at,
+            }),
+            None => Err(anyhow::anyhow!("Could not create user with")),
+        }
+    }
+
     async fn save(&self, user: &User) -> anyhow::Result<User> {
         let rows = sqlx::query!(
             r#"
@@ -27,7 +46,10 @@ impl UserRepo for PostgresUserRepo {
         .await?;
 
         match rows.first() {
-            Some(r) => Ok(User { id: r.id }),
+            Some(r) => Ok(User {
+                id: r.id,
+                created_at: r.created_at,
+            }),
             None => Err(anyhow::anyhow!(
                 "Could not create user with id {}",
                 user.id.to_string()
@@ -38,20 +60,26 @@ impl UserRepo for PostgresUserRepo {
     async fn get_all(&self) -> anyhow::Result<Vec<User>> {
         let rows = sqlx::query!(
             r#"
-            SELECT id
+            SELECT id, created_at
             FROM users
             "#
         )
         .fetch_all(&self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| User { id: r.id }).collect())
+        Ok(rows
+            .into_iter()
+            .map(|r| User {
+                id: r.id,
+                created_at: r.created_at,
+            })
+            .collect())
     }
 
     async fn get_by_id(&self, id: Uuid) -> anyhow::Result<User> {
         let row = sqlx::query!(
             r#"
-            SELECT id
+            SELECT id, created_at
             FROM users
             WHERE id = $1
             "#,
@@ -61,7 +89,10 @@ impl UserRepo for PostgresUserRepo {
         .await?;
 
         match row {
-            Some(r) => Ok(User { id: r.id }),
+            Some(r) => Ok(User {
+                id: r.id,
+                created_at: r.created_at,
+            }),
             None => Err(anyhow::anyhow!("User with id {} not found", id)),
         }
     }

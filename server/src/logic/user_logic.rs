@@ -6,8 +6,7 @@ use crate::{
 };
 
 pub async fn create_user<R: UserRepo + ?Sized>(repo: &R) -> anyhow::Result<User> {
-    let pending_user = User::new(None);
-    let created_user = repo.save(&pending_user).await?;
+    let created_user = repo.create().await?;
 
     Ok(created_user)
 }

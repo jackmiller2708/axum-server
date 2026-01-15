@@ -21,4 +21,5 @@ sqlx = { version = "0.8.6", features = [
     "chrono",
 ] }
 dotenvy = "0.15"
-uuid = { version = "1", features = ["v4"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
