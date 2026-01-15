@@ -7,7 +7,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- Users
 -- ===============================
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BIGSERIAL PRIMARY KEY,
+    email TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 -- ===============================
@@ -43,7 +44,7 @@ CREATE TYPE order_status AS ENUM (
 );
 CREATE TABLE orders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL REFERENCES users(id),
+    user_id BIGINT NOT NULL REFERENCES users(id),
     flash_sale_id UUID NOT NULL REFERENCES flash_sales(id),
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     status order_status NOT NULL,

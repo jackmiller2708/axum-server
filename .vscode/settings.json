@@ -1,5 +1,8 @@
 {
   "cSpell.words": [
-    "serde"
+    "dotenvy",
+    "flashdeal",
+    "serde",
+    "sqlx"
   ]
 }

@@ -9,9 +9,9 @@ pub struct MemoryUserRepo {
 
 #[async_trait]
 impl UserRepo for MemoryUserRepo {
-    async fn save(&self, user: &User) -> anyhow::Result<()> {
+    async fn save(&self, user: &User) -> anyhow::Result<User> {
         self.users.lock().unwrap().push(user.clone());
-        Ok(())
+        Ok(user.to_owned())
     }
 
     async fn get_all(&self) -> anyhow::Result<Vec<User>> {
@@ -21,7 +21,7 @@ impl UserRepo for MemoryUserRepo {
 
     async fn get_by_id(&self, id: u64) -> anyhow::Result<User> {
         let users = self.users.lock().unwrap().clone();
-        let user = users.into_iter().find(|user| user.id == id);
+        let user = users.into_iter().find(|user| user.id.is_some() && user.id.unwrap() == id);
         Ok(user.unwrap())
     }
 }

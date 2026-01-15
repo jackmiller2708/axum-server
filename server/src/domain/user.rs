@@ -1,6 +1,6 @@
 #[derive(Debug, Clone)]
 pub struct User {
-    pub id: u64,
+    pub id: Option<u64>,
     pub email: Email,
 }
 
@@ -18,7 +18,7 @@ impl Email {
 }
 
 impl User {
-    pub fn new(id: u64, email: Email) -> Self {
-        Self { id, email }
+    pub fn new(email: Email) -> Self {
+        Self { id: None, email }
     }
 }

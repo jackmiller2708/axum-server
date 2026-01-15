@@ -21,7 +21,7 @@ pub async fn create_user(
         .map_err(|e| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     Ok(Json(UserResponse {
-        id: user.id,
+        id: user.id.unwrap(),
         email: user.email.0,
     }))
 }
@@ -37,7 +37,7 @@ pub async fn get_users(
         users
             .into_iter()
             .map(|user| UserResponse {
-                id: user.id,
+                id: user.id.unwrap(),
                 email: user.email.0,
             })
             .collect(),
@@ -53,7 +53,7 @@ pub async fn get_user_by_id(
         .map_err(|e| (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     Ok(Json(UserResponse {
-        id: user.id,
+        id: user.id.unwrap(),
         email: user.email.0,
     }))
 }

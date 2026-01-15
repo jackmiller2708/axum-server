@@ -1,10 +1,14 @@
-use crate::{
-    adapters::{db::memory::MemoryUserRepo, http::router::http_router},
-    app::{config::Config, state::AppState},
-};
+use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;
 
+use crate::{
+    adapters::{db::postgres::PostgresUserRepo, http::router::http_router},
+    app::{config::Config, state::AppState},
+};
+
 pub async fn run() -> anyhow::Result<()> {
+    dotenvy::dotenv().ok();
+
     tracing_subscriber::fmt()
         .with_max_level(tracing::Level::DEBUG)
         .with_target(false)
@@ -16,7 +20,12 @@ pub async fn run() -> anyhow::Result<()> {
     let config = Config::from_env()?;
     tracing::debug!("Configuration loaded: {:?}", config);
 
-    let user_repo = Arc::new(MemoryUserRepo::default());
+    let pool = PgPoolOptions::new()
+        .max_connections(10)
+        .connect(&config.database_url)
+        .await?;
+
+    let user_repo = Arc::new(PostgresUserRepo::new(pool));
     tracing::debug!("User repository initialized");
 
     let state = AppState { user_repo };
