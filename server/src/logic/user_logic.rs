@@ -1,11 +1,12 @@
+use uuid::Uuid;
+
 use crate::{
-    domain::user::{Email, User},
+    domain::user::{User},
     ports::user_repo::UserRepo,
 };
 
-pub async fn create_user<R: UserRepo + ?Sized>(repo: &R, email: String) -> anyhow::Result<User> {
-    let email = Email::parse(&email).map_err(|e| anyhow::anyhow!(e))?;
-    let pending_user = User::new(email);
+pub async fn create_user<R: UserRepo + ?Sized>(repo: &R) -> anyhow::Result<User> {
+    let pending_user = User::new(None);
     let created_user = repo.save(&pending_user).await?;
 
     Ok(created_user)
@@ -17,7 +18,7 @@ pub async fn get_users<R: UserRepo + ?Sized>(repo: &R) -> anyhow::Result<Vec<Use
     Ok(users)
 }
 
-pub async fn get_user_by_id<R: UserRepo + ?Sized>(repo: &R, id: u64) -> anyhow::Result<User> {
+pub async fn get_user_by_id<R: UserRepo + ?Sized>(repo: &R, id: Uuid) -> anyhow::Result<User> {
     let user = repo.get_by_id(id).await?;
 
     Ok(user)

@@ -1,6 +1,7 @@
 use crate::{domain::user::User, ports::user_repo::UserRepo};
 use async_trait::async_trait;
 use std::sync::Mutex;
+use uuid::Uuid;
 
 #[derive(Default)]
 pub struct MemoryUserRepo {
@@ -19,9 +20,9 @@ impl UserRepo for MemoryUserRepo {
         Ok(users)
     }
 
-    async fn get_by_id(&self, id: u64) -> anyhow::Result<User> {
+    async fn get_by_id(&self, id: Uuid) -> anyhow::Result<User> {
         let users = self.users.lock().unwrap().clone();
-        let user = users.into_iter().find(|user| user.id.is_some() && user.id.unwrap() == id);
+        let user = users.into_iter().find(|user| user.id == id);
         Ok(user.unwrap())
     }
 }
