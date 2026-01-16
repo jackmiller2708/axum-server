@@ -21,20 +21,8 @@ impl ProductRecord {
     }
 }
 
-impl TryFrom<ProductRecord> for Product {
-    type Error = anyhow::Error;
-
-    fn try_from(r: ProductRecord) -> Result<Self, Self::Error> {
-        Ok(Self {
-            id: r.id,
-            name: r.name,
-            created_at: r.created_at,
-        })
-    }
-}
-
-impl From<&Product> for ProductRecord {
-    fn from(p: &Product) -> Self {
+impl From<Product> for ProductRecord {
+    fn from(p: Product) -> Self {
         Self {
             id: p.id,
             name: p.name.clone(),

@@ -3,7 +3,7 @@ use tracing_subscriber::EnvFilter;
 
 use crate::{
     adapters::{
-        db::postgres::{
+        db::{
             pool::create_pool, product::repository::PostgresProductRepo,
             user::repository::PostgresUserRepo,
         },

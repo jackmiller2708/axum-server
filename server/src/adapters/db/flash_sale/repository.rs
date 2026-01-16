@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use sqlx::PgPool;
 
 use crate::{
-    adapters::db::postgres::flash_sale::record::FlashSaleRecord, domain::flash_sale::FlashSale,
+    adapters::db::flash_sale::record::FlashSaleRecord, domain::flash_sale::FlashSale,
     ports::flash_sale_repo::FlashSaleRepo,
 };
 

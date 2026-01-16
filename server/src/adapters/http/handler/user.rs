@@ -3,7 +3,7 @@ use axum::{Json, extract::State};
 use uuid::Uuid;
 
 use crate::{
-    adapters::http::dto::user_reponse::UserResponse, app::state::AppState, logic::user_logic,
+    adapters::http::dto::user::UserResponse, app::state::AppState, logic::user::user_logic,
 };
 
 pub async fn create_user(

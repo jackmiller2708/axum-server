@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
-use crate::{adapters::db::postgres::order::status::OrderStatusDb, domain::order::Order};
+use crate::{adapters::db::order::status::OrderStatusDb, domain::order::Order};
 
 #[derive(Debug)]
 pub struct OrderRecord {

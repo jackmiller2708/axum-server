@@ -2,8 +2,7 @@ use async_trait::async_trait;
 use sqlx::PgPool;
 
 use crate::{
-    adapters::db::postgres::order::record::OrderRecord, domain::order::Order,
-    ports::order_repo::OrderRepo,
+    adapters::db::order::record::OrderRecord, domain::order::Order, ports::order_repo::OrderRepo,
 };
 
 pub struct PostgresOrderRepo {

@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::adapters::db::postgres::user::record::UserRecord;
+use crate::adapters::db::user::record::UserRecord;
 use crate::{domain::user::User, ports::user_repo::UserRepo};
 
 pub struct PostgresUserRepo {
