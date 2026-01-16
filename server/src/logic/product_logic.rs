@@ -1,5 +1,3 @@
-use uuid::Uuid;
-
 use crate::{domain::product::Product, ports::product_repo::ProductRepo};
 
 pub async fn save_product<R: ProductRepo + ?Sized>(

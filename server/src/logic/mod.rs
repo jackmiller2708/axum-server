@@ -1,2 +1,2 @@
-pub mod product_logic;
+pub mod product;
 pub mod user_logic;

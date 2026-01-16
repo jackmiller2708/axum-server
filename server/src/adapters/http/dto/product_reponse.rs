@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 
 use crate::domain::product::Product;
 
+#[derive(serde::Serialize)]
 pub struct ProductResponse {
     pub id: String,
     pub name: String,
