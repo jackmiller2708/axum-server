@@ -1,23 +1,10 @@
-use crate::{app::state::AppState, domain::user::User, logic::user_logic};
 use anyhow::Context;
 use axum::{Json, extract::State};
-use sqlx::types::chrono::{DateTime, Utc};
 use uuid::Uuid;
 
-#[derive(serde::Serialize)]
-pub struct UserResponse {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-}
-
-impl From<User> for UserResponse {
-    fn from(user: User) -> Self {
-        Self {
-            id: user.id,
-            created_at: user.created_at,
-        }
-    }
-}
+use crate::{
+    adapters::http::dto::user_reponse::UserResponse, app::state::AppState, logic::user_logic,
+};
 
 pub async fn create_user(
     State(state): State<AppState>,
