@@ -20,12 +20,11 @@ impl PostgresOrderRepo {
 impl OrderRepo for PostgresOrderRepo {
     async fn save(&self, order: &Order) -> anyhow::Result<Order> {
         let record: OrderRecord = order.into();
-
         let saved = sqlx::query_as!(
             OrderRecord,
             r#"
             INSERT INTO orders (user_id, flash_sale_id, quantity, status, created_at)
-            VALUES ($1, $2, $3, $4::order_status, $5)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING id, user_id, flash_sale_id, quantity, status as "status: _", created_at
             "#,
             record.user_id,
@@ -52,6 +51,7 @@ impl OrderRepo for PostgresOrderRepo {
         .await?;
 
         let orders: Result<Vec<Order>, _> = records.into_iter().map(Order::try_from).collect();
+
         Ok(orders?)
     }
 }
