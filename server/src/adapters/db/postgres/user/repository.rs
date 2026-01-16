@@ -1,9 +1,9 @@
 use async_trait::async_trait;
-use chrono::{DateTime, Utc};
-use sqlx::{PgPool, prelude::FromRow};
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{domain::user::User, ports::user_repo::UserRepo};
+use crate::adapters::db::postgres::user::record::UserRecord;
 
 pub struct PostgresUserRepo {
     pool: PgPool,
@@ -12,21 +12,6 @@ pub struct PostgresUserRepo {
 impl PostgresUserRepo {
     pub fn new(pool: PgPool) -> Self {
         Self { pool }
-    }
-}
-
-#[derive(Debug, FromRow)]
-pub struct UserRecord {
-    pub id: Uuid,
-    pub created_at: DateTime<Utc>,
-}
-
-impl From<UserRecord> for User {
-    fn from(r: UserRecord) -> Self {
-        Self {
-            id: r.id,
-            created_at: r.created_at,
-        }
     }
 }
 
@@ -43,7 +28,7 @@ impl UserRepo for PostgresUserRepo {
         .fetch_one(&self.pool)
         .await?;
 
-        Ok(record.into())
+        Ok(record.as_user())
     }
 
     async fn save(&self, user: &User) -> anyhow::Result<User> {
@@ -60,7 +45,7 @@ impl UserRepo for PostgresUserRepo {
         .fetch_one(&self.pool)
         .await?;
 
-        Ok(record.into())
+        Ok(record.as_user())
     }
 
     async fn get_all(&self) -> anyhow::Result<Vec<User>> {
@@ -74,7 +59,7 @@ impl UserRepo for PostgresUserRepo {
         .fetch_all(&self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| r.into()).collect())
+        Ok(rows.into_iter().map(|r| r.as_user()).collect())
     }
 
     async fn get_by_id(&self, id: Uuid) -> anyhow::Result<User> {
@@ -91,7 +76,7 @@ impl UserRepo for PostgresUserRepo {
         .await?;
 
         match row {
-            Some(r) => Ok(r.into()),
+            Some(r) => Ok(r.as_user()),
             None => Err(anyhow::anyhow!("User with id {} not found", id)),
         }
     }

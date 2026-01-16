@@ -1,9 +1,11 @@
-use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;
 use tracing_subscriber::EnvFilter;
 
 use crate::{
-    adapters::{db::postgres::PostgresUserRepo, http::router::http_router},
+    adapters::{
+        db::postgres::{pool::create_pool, user::repository::PostgresUserRepo},
+        http::router::http_router,
+    },
     app::{config::Config, state::AppState},
 };
 
@@ -20,11 +22,7 @@ pub async fn run() -> anyhow::Result<()> {
     let config = Config::from_env()?;
     tracing::debug!("Configuration loaded: {:?}", config);
 
-    let pool = PgPoolOptions::new()
-        .max_connections(10)
-        .connect(&config.database_url)
-        .await?;
-
+    let pool = create_pool(&config).await?;
     let user_repo = Arc::new(PostgresUserRepo::new(pool));
     tracing::debug!("User repository initialized");
 
