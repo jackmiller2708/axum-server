@@ -3,7 +3,10 @@ use tracing_subscriber::EnvFilter;
 
 use crate::{
     adapters::{
-        db::postgres::{pool::create_pool, user::repository::PostgresUserRepo},
+        db::postgres::{
+            pool::create_pool, product::repository::PostgresProductRepo,
+            user::repository::PostgresUserRepo,
+        },
         http::router::http_router,
     },
     app::{config::Config, state::AppState},
@@ -23,10 +26,16 @@ pub async fn run() -> anyhow::Result<()> {
     tracing::debug!("Configuration loaded: {:?}", config);
 
     let pool = create_pool(&config).await?;
-    let user_repo = Arc::new(PostgresUserRepo::new(pool));
+    let user_repo = Arc::new(PostgresUserRepo::new(pool.clone()));
     tracing::debug!("User repository initialized");
 
-    let state = AppState { user_repo };
+    let product_repo = Arc::new(PostgresProductRepo::new(pool.clone()));
+    tracing::debug!("Product repository initialized");
+
+    let state = AppState {
+        user_repo,
+        product_repo,
+    };
     let app = http_router(state);
     tracing::debug!("HTTP router configured");
 

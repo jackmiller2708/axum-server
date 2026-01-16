@@ -9,6 +9,6 @@ pub struct FlashSale {
     pub end_time: DateTime<Utc>,
     pub total_inventory: u32,
     pub remaining_inventory: u32,
-    pub per_uer_limit: u8,
+    pub per_user_limit: u8,
     pub created_at: DateTime<Utc>,
 }
