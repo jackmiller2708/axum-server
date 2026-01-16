@@ -1,8 +1,9 @@
-use crate::{domain::user::User, ports::user_repo::UserRepo};
 use async_trait::async_trait;
 use chrono::DateTime;
 use std::sync::Mutex;
 use uuid::Uuid;
+
+use crate::{domain::user::User, ports::user_repo::UserRepo};
 
 #[derive(Default)]
 pub struct MemoryUserRepo {
@@ -12,7 +13,10 @@ pub struct MemoryUserRepo {
 #[async_trait]
 impl UserRepo for MemoryUserRepo {
     async fn create(&self) -> anyhow::Result<User> {
-        let created_user = User { id: Uuid::new_v4(), created_at: DateTime::default() };
+        let created_user = User {
+            id: Uuid::new_v4(),
+            created_at: DateTime::default(),
+        };
 
         self.users.lock().unwrap().push(created_user.clone());
         Ok(created_user)

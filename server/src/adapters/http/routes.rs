@@ -1,9 +1,10 @@
-use crate::adapters::http::handlers;
-use crate::app::state::AppState;
 use axum::{
     Router,
     routing::{get, post},
 };
+
+use crate::adapters::http::handlers;
+use crate::app::state::AppState;
 
 pub fn routes() -> Router<AppState> {
     Router::new()

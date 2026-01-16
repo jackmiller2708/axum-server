@@ -1,5 +1,6 @@
-use crate::ports::user_repo::UserRepo;
 use std::sync::Arc;
+
+use crate::ports::user_repo::UserRepo;
 
 #[derive(Clone)]
 pub struct AppState {

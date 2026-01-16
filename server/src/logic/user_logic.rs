@@ -1,9 +1,6 @@
 use uuid::Uuid;
 
-use crate::{
-    domain::user::{User},
-    ports::user_repo::UserRepo,
-};
+use crate::{domain::user::User, ports::user_repo::UserRepo};
 
 pub async fn create_user<R: UserRepo + ?Sized>(repo: &R) -> anyhow::Result<User> {
     let created_user = repo.create().await?;
